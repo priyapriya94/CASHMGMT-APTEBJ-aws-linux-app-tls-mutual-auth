@@ -1,0 +1,30 @@
+name: aws-linux-app-tls-mutual-auth
+
+on:
+  workflow_dispatch:
+    inputs:
+      appVersion:
+        required: true
+        type: string
+
+env:
+  repoPrefix: CASHMGMT-APTEBJ
+
+  
+jobs:
+  account-validation-api-image:
+    uses: dyedurham/CASHMGMT-ecs-generic-template/.github/workflows/ecs.yml@main
+    with:
+      product: 'APT'
+      repo: 'CASHMGMT-APTEBJ-aws-linux-app-tls-mutual-auth'
+      appVersion: '${{ inputs.appVersion }}'
+      imageName: 'tls-mutual-auth'
+      entrypoint: '/opt/apt/scripts/startup.sh'
+      app: batch
+      ecr-app: app
+      scripts:  'scripts/install_acme.sh,scripts/install_configs.sh'
+    secrets:
+      AWS_ACCESS_KEY_ID: ${{ secrets.APT_NONP_AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.APT_NONP_AWS_SECRET_ACCESS_KEY }}
+      TOKEN_GH: ${{ secrets.TOKEN_GH }}
+      
